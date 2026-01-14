@@ -1,3 +1,4 @@
+# Grab the arch
 ARCH=$(shell uname -m)
 ifeq ($(ARCH),arm64)
 PLATFORM=linux/arm64
@@ -6,40 +7,44 @@ PLATFORM=linux/amd64
 ARCH=amd64
 endif
 
+# Grab the number of jobs
 NJOBS ?= 0
 ifeq ($(NJOBS),0)
 NJOBS=$(shell nproc)
 endif
 
+# Docker build command
 DOCKER_BUILD=docker buildx build
 
-# Build amd64 variant
-dependencies-amd64:
+# Build the minimal dependencies amd64 variant
+minimal-dependencies-amd64:
 	$(DOCKER_BUILD) \
 		--platform linux/amd64 \
 		-t landinjm/prisms-pf-dependencies:alpine-amd64 \
 		--build-arg NJOBS=${NJOBS} \
+		--build-arg ALL_DEPENDENCIES=OFF \
 		./dependencies
 
-# Build arm64 variant
-dependencies-arm64:
+# Build the minimal dependencies arm64 variant
+minimal-dependencies-arm64:
 	$(DOCKER_BUILD) \
 		--platform linux/arm64 \
 		-t landinjm/prisms-pf-dependencies:alpine-arm64 \
 		--build-arg NJOBS=${NJOBS} \
+		--build-arg ALL_DEPENDENCIES=OFF \
 		./dependencies
 
-dependencies-merge::
-	docker buildx imagetools create -t landinjm/prisms-pf-dependencies:alpine \
-		landinjm/prisms-pf-dependencies:alpine-arm64 \
-		landinjm/prisms-pf-dependencies:alpine-amd64
+# dependencies-merge::
+# 	docker buildx imagetools create -t landinjm/prisms-pf-dependencies:alpine \
+# 		landinjm/prisms-pf-dependencies:alpine-arm64 \
+# 		landinjm/prisms-pf-dependencies:alpine-amd64
 
-dependencies: dependencies-amd64 dependencies-arm64 dependencies-merge
+minimal-dependencies: minimal-dependencies-amd64 minimal-dependencies-arm64 # dependencies-merge
 
-all: dependencies
+all: minimal-dependencies
 
 .PHONY: all \
 	dependencies \
-	dependencies-amd64 \
-	dependencies-arm64 \
+	minimal-dependencies-amd64 \
+	minimal-dependencies-arm64 \
 	dependencies-merge
