@@ -26,6 +26,8 @@ RUN apk add --no-cache \
         wget \
         tar \
         bash \
+        openssh \
+        sudo \
     && \
     # Install p4est
     wget https://p4est.github.io/release/p4est-2.8.7.tar.gz && \
