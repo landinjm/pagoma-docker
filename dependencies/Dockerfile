@@ -1,6 +1,6 @@
 FROM alpine:3.22.1
 
-ARG USER=prisms-pf       # Default user
+ARG USER=pagoma          # Default user
 ARG UID=1234             # Default user ID
 ARG NJOBS=0              # Jobs used for building. Default: Use all available jobs.
 ARG ALL_DEPENDENCIES=OFF # Whether to build all dependencies or not. Default: Build minimal dependencies
@@ -13,7 +13,7 @@ USER root
 ENV PATH="/usr/lib/openmpi/bin:${PATH}"
 
 # Install build dependencies as virtual package and do all builds in one layer
-RUN apk add --no-cache --virtual .build-deps \
+RUN apk add --no-cache \
         build-base \
         cmake \
         git \
@@ -32,7 +32,7 @@ RUN apk add --no-cache --virtual .build-deps \
     wget https://dealii.org/developer/external-libs/p4est-setup.sh && \
     chmod u+x p4est-setup.sh && \
     ./p4est-setup.sh p4est-2.8.7.tar.gz /usr/local/p4est && \
-    rm p4est-setup.sh p4est-2.8.7.tar.gz && \
+    rm -rf p4est-setup.sh p4est-2.8.7.tar.gz p4est-2.8.7 p4est-build && \
     # Install deal.II
     git clone https://github.com/dealii/dealii dealii-$DEAL_II_VER && \
     cd dealii-$DEAL_II_VER && \
@@ -81,8 +81,6 @@ RUN apk add --no-cache --virtual .build-deps \
     ninja -j $NJOBS install && \
     cd ../../ && \
     rm -rf dealii-$DEAL_II_VER && \
-    # Remove build dependencies
-    apk del .build-deps && \
     rm -rf /var/cache/apk/* /tmp/* /root/.cache
 
 # Add default user

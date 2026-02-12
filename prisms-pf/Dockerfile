@@ -1,7 +1,7 @@
 ARG IMG=noble
 ARG ARCH=amd64
 
-FROM landinjm/prisms-pf-dependencies:${IMG}-${ARCH}
+FROM landinjm/pagoma-dependencies:${IMG}-${ARCH}
 
 ARG NJOBS=0          # Jobs used for building. Default: Use all available jobs.
 ARG VER=master       # PRISMS-PF branch that gets checked out.

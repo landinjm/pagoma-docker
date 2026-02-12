@@ -20,7 +20,7 @@ DOCKER_BUILD=docker buildx build
 minimal-dependencies-amd64:
 	$(DOCKER_BUILD) \
 		--platform linux/amd64 \
-		-t landinjm/prisms-pf-dependencies:alpine-amd64 \
+		-t landinjm/pagoma-dependencies:alpine-amd64 \
 		--build-arg NJOBS=${NJOBS} \
 		--build-arg ALL_DEPENDENCIES=OFF \
 		./dependencies
@@ -29,17 +29,17 @@ minimal-dependencies-amd64:
 minimal-dependencies-arm64:
 	$(DOCKER_BUILD) \
 		--platform linux/arm64 \
-		-t landinjm/prisms-pf-dependencies:alpine-arm64 \
+		-t landinjm/pagoma-dependencies:alpine-arm64 \
 		--build-arg NJOBS=${NJOBS} \
 		--build-arg ALL_DEPENDENCIES=OFF \
 		./dependencies
 
-# dependencies-merge::
-# 	docker buildx imagetools create -t landinjm/prisms-pf-dependencies:alpine \
-# 		landinjm/prisms-pf-dependencies:alpine-arm64 \
-# 		landinjm/prisms-pf-dependencies:alpine-amd64
+minimal-dependencies-merge::
+	docker buildx imagetools create -t landinjm/pagoma-dependencies:alpine \
+		landinjm/pagoma-dependencies:alpine-arm64 \
+		landinjm/pagoma-dependencies:alpine-amd64
 
-minimal-dependencies: minimal-dependencies-amd64 minimal-dependencies-arm64 # dependencies-merge
+minimal-dependencies: minimal-dependencies-amd64 minimal-dependencies-arm64 minimal-dependencies-merge
 
 all: minimal-dependencies
 
@@ -47,4 +47,4 @@ all: minimal-dependencies
 	dependencies \
 	minimal-dependencies-amd64 \
 	minimal-dependencies-arm64 \
-	dependencies-merge
+	minimal-dependencies-merge
