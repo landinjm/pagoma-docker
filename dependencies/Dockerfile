@@ -4,7 +4,7 @@ ARG USER=prisms-pf       # Default user
 ARG UID=1234             # Default user ID
 ARG NJOBS=0              # Jobs used for building. Default: Use all available jobs.
 ARG ALL_DEPENDENCIES=OFF # Whether to build all dependencies or not. Default: Build minimal dependencies
-ARG DEAL_II_VER=v9.6.2   # deal.II branch that gets checked out.
+ARG DEAL_II_VER=v9.7.1   # deal.II branch that gets checked out.
 ARG FLAGS=""             # Additional flags for the build.
 
 USER root
