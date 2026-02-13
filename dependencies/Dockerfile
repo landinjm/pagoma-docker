@@ -33,6 +33,7 @@ RUN apk add --no-cache \
     wget https://p4est.github.io/release/p4est-2.8.7.tar.gz && \
     wget https://dealii.org/developer/external-libs/p4est-setup.sh && \
     chmod u+x p4est-setup.sh && \
+    sed -i 's/-j 8/-j $NJOBS/g' p4est-setup.sh && \
     ./p4est-setup.sh p4est-2.8.7.tar.gz /usr/local/p4est && \
     rm -rf p4est-setup.sh p4est-2.8.7.tar.gz p4est-2.8.7 p4est-build && \
     # Install deal.II
