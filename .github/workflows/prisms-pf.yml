@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    if: github.repository == 'landinjm/prisms-pf-docker' # Don't run on forks
     name: Build ${{ matrix.platform }} image
     runs-on: ${{ matrix.runs-on }}
     timeout-minutes: 60
