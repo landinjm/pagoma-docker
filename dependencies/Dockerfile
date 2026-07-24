@@ -43,11 +43,9 @@ RUN apk add --no-cache \
     ./p4est-setup.sh p4est-2.8.7.tar.gz /usr/local/p4est && \
     rm -rf p4est-setup.sh p4est-2.8.7.tar.gz p4est-2.8.7 p4est-build && \
     # Install deal.II
-    git clone https://github.com/dealii/dealii dealii-$DEAL_II_VER && \
+    git clone --depth=1 -b $DEAL_II_VER https://github.com/dealii/dealii dealii-$DEAL_II_VER && \
     cd dealii-$DEAL_II_VER && \
-    git checkout $DEAL_II_VER && \
-    mkdir build && cd build && \
-    cmake -GNinja \
+    cmake -B build -G Ninja \
         -DCMAKE_CXX_FLAGS="$FLAGS" \
         -DCMAKE_CXX_STANDARD=20 \
         -DCMAKE_C_COMPILER=mpicc \
@@ -87,9 +85,10 @@ RUN apk add --no-cache \
         -DDEAL_II_WITH_VTK=OFF \
         -DDEAL_II_WITH_ZLIB=ON \
         -DP4EST_DIR=/usr/local/p4est \
-        .. && \
-    ninja -j $NJOBS install && \
-    cd ../../ && \
+        && \
+    cmake --build build -j $NJOBS && \
+    cmake --install build && \
+    cd .. && \
     rm -rf dealii-$DEAL_II_VER && \
     rm -rf /var/cache/apk/* /tmp/* /root/.cache
 
